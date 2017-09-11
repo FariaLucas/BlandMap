@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="joml">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Documents/OpenGL- Libs/JOML-1.6.7/joml.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Documents/OpenGL- Libs/JOML-1.6.7/JOML.zip!/JOML-1.6.6/src" />
+      <root url="jar://$USER_HOME$/Documents/OpenGL- Libs/JOML-1.6.7/JOML.zip!/JOML-1.6.6/test" />
+      <root url="jar://$USER_HOME$/Documents/OpenGL- Libs/JOML-1.6.7/src.zip!/src" />
+    </SOURCES>
+  </library>
+</component>
