@@ -55,7 +55,7 @@ public class MultiTexture implements Scene {
                 new Vector3f( 1.0f,  1.0f,  1.0f));   //specular
 
         try {
-            mesh = MeshFactory.loadTerrain(new File(PATH + "heights/BlendMap.png"), 0.4f, 3);
+            mesh = MeshFactory.loadTerrain(new File(PATH + "heights/river.png"), 0.4f, 3);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -66,6 +66,9 @@ public class MultiTexture implements Scene {
                 new Vector3f(0.9f, 0.9f, 0.9f), //diffuse
                 new Vector3f(0.0f, 0.0f, 0.0f), //specular
                 0.0f);                          //specular power
+
+        material.setTexture("BlendMap", new Texture(PATH + "textures/BlendMap.png"));
+
         material.setTextures(new Texture(PATH + "textures/snow.png"),
         new Texture(PATH + "textures/rock.png"),
         new Texture(PATH + "textures/grass.png"),

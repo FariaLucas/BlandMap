@@ -240,6 +240,11 @@ public class MeshFactory {
             }
         }
 
+        BufferedImage BlendIMG = new BufferedImage(width,depth, BufferedImage.TYPE_INT_ARGB);
+
+        List<Vector2f> list = new ArrayList<>();
+        tx = 1.0f / width;
+        ty = 1.0f / depth;
 
         //Calculo dos pesos
         List<Vector4f> texWeights = new ArrayList<>();
@@ -247,18 +252,30 @@ public class MeshFactory {
             for (int x = 0; x < width; x++) {
                 int tone = new Color(img.getRGB(x, z)).getRed();
                 float h = tone / (float)maxHeight;
-                Color cor = new Color(img.getRGB(x, z));
-                Vector4f weight = new Vector4f(cor.getRed(), cor.getGreen(), cor.getBlue(), cor.getAlpha());
-                texWeights.add(weight);
+                list.add(new Vector2f(x*tx,z*ty));
+
+                Color cor = Normalize(calcLinear(0.75f, 1.00f, h, false),
+                        calcPiramid(0.50f, 0.80f, h),
+                        calcPiramid(0.15f, 0.60f, h),
+                        calcLinear(0.00f, 0.16f, h, true));
+                BlendIMG.setRGB(x,z,cor.getRGB());
             }
         }
+        ImageIO.write(BlendIMG,"png",new File("/Users/LUCAS/Documents/img/opengl/textures/BlendMap.png"));
 
         return new MeshBuilder()
                     .addVector3fAttribute("aPosition", positions)
                     .addVector3fAttribute("aNormal", normals)
                     .addVector2fAttribute("aTexCoord", texCoords)
-                    .addVector4fAttribute("aTexWeight", texWeights)
+                    .addVector2fAttribute("aBlendCoord", list)
                     .setIndexBuffer(indices)
                     .create();
+    }
+
+    private static Color Normalize(float v, float v1, float v2, float v3) {
+        return new Color((v > 1) ? 1 : (v < 0) ? 0 : v,
+                (v1 > 1) ? 1 : (v1 < 0) ? 0 : v1,
+                (v2 > 1) ? 1 : (v2 < 0) ? 0 : v2,
+                (v3 > 1) ? 1 : (v3 < 0) ? 0 : v3);
     }
 }

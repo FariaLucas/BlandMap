@@ -17,6 +17,9 @@ uniform sampler2D uTex1;
 uniform sampler2D uTex2;
 uniform sampler2D uTex3;
 
+uniform sampler2D BlendMap;
+in vec2 vBlendCoord;
+
 in vec3 vNormal;
 in vec3 vViewPath;
 in vec2 vTexCoord;
@@ -48,25 +51,23 @@ void main() {
     vec2 farCoord = vTexCoord * 10;
     vec2 nearCoord = vTexCoord *50;
 
-    vec4 texelFar = texture(uTex0, farCoord) * vTexWeight.x +
-        texture(uTex1, farCoord) * vTexWeight.y +
-        texture(uTex2, farCoord) * vTexWeight.z +
-        texture(uTex3, farCoord) * vTexWeight.w;
+    vec4 pixelBlend = texture(BlendMap, vBlendCoord);
+    float t = pixelBlend.x + pixelBlend.y + pixelBlend.z + pixelBlend.w;
 
-    vec4 texelNear = texture(uTex0, nearCoord) * vTexWeight.x +
-            texture(uTex1, nearCoord) * vTexWeight.y +
-            texture(uTex2, nearCoord) * vTexWeight.z +
-            texture(uTex3, nearCoord) * vTexWeight.w;
+    pixelBlend /= t;
+
+    vec4 texelFar = texture(uTex0, farCoord) * pixelBlend.x +
+        texture(uTex1, farCoord) * pixelBlend.y +
+        texture(uTex2, farCoord) * pixelBlend.z +
+        texture(uTex3, farCoord) * pixelBlend.w;
+
+    vec4 texelNear = texture(uTex0, nearCoord) * pixelBlend.x +
+            texture(uTex1, nearCoord) * pixelBlend.y +
+            texture(uTex2, nearCoord) * pixelBlend.z +
+            texture(uTex3, nearCoord) * pixelBlend.w;
 
     vec4 texel = mix(texelNear, texelFar, blendFactor);
 
-    //vec2 nearCoord = vec2(vTexCoord.s, vTexCoord.t) * 50.0;
-    //vec2 farCoord = vec2(vTexCoord.s, vTexCoord.t) * 10.0;
-
-    //vec4 texelFar = texture(uTexture, farCoord);
-    //vec4 texelNear = texture(uTexture, nearCoord);
-
-    //vec4 texel = texture(uTexture, vTexCoord);
     
     vec3 color = clamp(texel.rgb * (ambient + diffuse) + specular, 0.0, 1.0);
     outColor = vec4(color, texel.a);
